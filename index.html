@@ -432,15 +432,13 @@
                 <div class="aws-code">
 <span class="comment"># Create 8GB GP3 root volume (automated during EC2 launch)</span>
 <span class="comment"># Create additional 2GB GP3 volume</span>
-<img src="Images/Gp3VolumeCreated.png" alt="AWS Screenshot" width="400">
 aws ec2 create-volume --size 2 --volume-type gp8 --availability-zone eu-north-1b
-
 <span class="comment"># Attach volume to running instance</span>
 aws ec2 attach-volume --volume-id vol-xxxxx --instance-id i-xxxxx --device /dev/sdf
-<img src="Images/Gp3VolumeAttached.png" alt="AWS Screenshot" width="400">
+
                 </div>
-
-
+<img src="Images/Gp3VolumeCreated.png" alt="AWS Screenshot" width="400">
+<img src="Images/Gp3VolumeAttached.png" alt="AWS Screenshot" width="400">
                 <h4>Volume Encryption Implementation</h4>
                 <div class="aws-code">
 <span class="comment"># Create encrypted volume</span>
