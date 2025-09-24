@@ -341,8 +341,14 @@
             <div class="aws-badge">SC1</div>
             
             <ul class="aws-list">
-                <li class="info"><strong>Volume Types Implemented:</strong> GP2, GP3, IO1, IO2, ST1, SC1</li>
-                <li class="info"><strong>Multi-Attach Configuration:</strong> IO1/IO2 volumes across multiple EC2 instances</li>
+                <li class="info"><strong>Volume Types Implemented:</strong> GP3</li>
+				<img src="Images/Gp3VolumeCreated.png" alt="AWS Screenshot" width="400">
+				<li class="info"><strong>Volume Attached:</strong> GP3 volume attched to EC2 instances:</li>
+				<img src="Images/Gp3VolumeAttached.png" alt="AWS Screenshot" width="400">
+                <li class="info"><strong>Attempted to attached a new volume from a different AZ to my EC2 instance:</strong> No option to attach to my EC2 Instance, as volumes are AZ bound</li>
+				<img src="Images/newGp3VolumeCreated.png" alt="AWS Screenshot" width="400">
+				<li></li>
+				<img src="Images/newGp3VolumeNotAttached.png" alt="AWS Screenshot" width="400">
                 <li class="info"><strong>Encryption:</strong> At-rest and in-transit encryption implementation</li>
                 <li class="info"><strong>Performance Optimization:</strong> IOPS and throughput configuration</li>
             </ul>
