@@ -456,14 +456,14 @@ aws ec2 copy-snapshot \
                     <li class="info"><strong>Retention Period:</strong> 1 days for production snapshots</li>
                     <li class="info"><strong>Resource Types:</strong> EBS Snapshots and AMIs</li>
                     <li class="info"><strong>Rule Application:</strong> All resources with automatic tagging</li>
-					<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
+						<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
 					<li class="info"><strong>Delete Snapshot:</strong> Snapshot deleted</li>
-					<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
+						<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
 					<li class="info"><strong>Delete Snapshot:</strong> Snapshot deleted</li>
 					<li class="info"><strong>Recover Snapshot:</strong> Snapshot recovered</li>
-					<img src="Images/demoSnapshotRecoverd.png" alt="AWS Screenshot" width="400">
+						<img src="Images/demoSnapshotRecoverd.png" alt="AWS Screenshot" width="400">
 					<li></li>
-					<img src="Images/snapshotSuccessRecoverd.png" alt="AWS Screenshot" width="400">
+						<img src="Images/snapshotSuccessRecoverd.png" alt="AWS Screenshot" width="400">
                 </ul>
                 
 
@@ -478,16 +478,19 @@ aws ec2 copy-snapshot \
                         <ul class="aws-list">
                             <li class="info">Amazon Linux 2 with security updates</li>
                             <li class="info">Apache HTTP server installation</li>
-                            <li class="info">Custom security configurations</li>
+								<pre><code>#!/bin/bash
+								# Use this for your user data (script from top to bottom)
+								# install httpd (Linux 2 version)
+								yum update -y
+								yum install -y httpd
+								systemctl start httpd
+								systemctl enable httpd
+								</code></pre> 
                             <li class="info">Application dependencies</li>
                         </ul>
                     </li>
                 </ol>
                 
-                <div class="aws-image">
-                    <img src="Images/base-instance-config.png" alt="Base Instance Configuration" width="600">
-                </div>
-
                 <div class="aws-code">
 <span class="comment"># Create AMI from configured instance</span>
 aws ec2 create-image \
@@ -495,11 +498,21 @@ aws ec2 create-image \
   --name "Custom-WebServer-$(date +%Y%m%d)" \
   --description "Pre-configured web server with Apache"
                 </div>
-                
-                <div class="aws-image">
-                    <img src="Images/ami-creation-process.png" alt="AMI Creation in Console" width="600">
-                </div>
-
+                <img src="Images/AMI_Template.png" alt="AWS Screenshot" width="400">
+				<li></li>
+				<img src="Images/AMI_WebServerURL.png" alt="AWS Screenshot" width="400">
+				<li></li>
+				<img src="Images/AMI_Image.png" alt="AWS Screenshot" width="400">
+				<li>So now when launching an instance, I can select the AMI and simply add the index.HTML to the webServer, since its' webservice was already installed in the AMI: </li>
+				<img src="Images/InstanceDemoAMI.png" alt="AWS Screenshot" width="400">
+				<pre><code>#!/bin/bash
+					# Use this for your user data (script from top to bottom)
+					# install httpd (Linux 2 version)
+					echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
+				</code></pre> 
+				<img src="Images/AMI_InstanceLaunched.png" alt="AWS Screenshot" width="400">
+				<li>The webserver initialization is much quicker this way as the apache webserver service is already pre-installed and enabled</li>
+				<img src="Images/AMI_ImageWebserver_Running.png" alt="AWS Screenshot" width="400">
                 <h4>Cross-Region Distribution</h4>
                 <div class="aws-code">
 <span class="comment"># Copy AMI to multiple regions</span>
