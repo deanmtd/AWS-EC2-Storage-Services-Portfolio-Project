@@ -349,8 +349,8 @@
 				<img src="Images/newGp3VolumeCreated.png" alt="AWS Screenshot" width="400">
 				<li></li>
 				<img src="Images/newGp3VolumeNotAttached.png" alt="AWS Screenshot" width="400">
-                <li class="info"><strong>Encryption:</strong> At-rest and in-transit encryption implementation</li>
-                <li class="info"><strong>Performance Optimization:</strong> IOPS and throughput configuration</li>
+                <li class="info"><strong>Encryption:</strong> Reviewed encryption options</li>
+                <li class="info"><strong>Performance Optimization:</strong> Reviewed the various throughput configurations</li>
             </ul>
             
             <div class="aws-image">
@@ -359,8 +359,9 @@
 
             <h3>2. Snapshot Management</h3>
             <ul class="aws-list">
-                <li class="info"><strong>Automated Backups:</strong> EBS snapshot creation and scheduling</li>
-                <li class="info"><strong>Cross-AZ/Region Replication:</strong> Disaster recovery implementation</li>
+                <li class="info"><strong>Demo Snapshot created:</strong> Reviewed EBS snapshot creation and scheduling</li>
+				<img src="Images/demoSnapshotCreated.png" alt="AWS Screenshot" width="400">
+                <li class="info"><strong>Cross-AZ/Region Replication:</strong> Snapshots can be copied to different AZ's during disaster recovery implementations</li>
                 <li class="info"><strong>Archive Strategies:</strong> EBS Snapshot Archive for cost optimization</li>
                 <li class="info"><strong>Recycle Bin Configuration:</strong> Accidental deletion protection</li>
             </ul>
@@ -396,7 +397,7 @@
         </section>
 
         <section class="aws-card">
-            <h2>Project Architecture</h2>
+            <h2>Project Architecture Example</h2>
             <div class="aws-architecture">
 ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
 │   AZ-1a         │    │   AZ-1b         │    │   AZ-1c         │
@@ -429,46 +430,39 @@
                 
                 <h4>Basic Volume Creation and Attachment</h4>
                 <div class="aws-code">
-<span class="comment"># Create 8GB GP2 root volume (automated during EC2 launch)</span>
-<span class="comment"># Create additional 2GB GP2 volume</span>
-aws ec2 create-volume --size 2 --volume-type gp2 --availability-zone us-east-1a
+<span class="comment"># Create 8GB GP3 root volume (automated during EC2 launch)</span>
+<span class="comment"># Create additional 2GB GP3 volume</span>
+<img src="Images/Gp3VolumeCreated.png" alt="AWS Screenshot" width="400">
+aws ec2 create-volume --size 2 --volume-type gp8 --availability-zone eu-north-1b
 
 <span class="comment"># Attach volume to running instance</span>
 aws ec2 attach-volume --volume-id vol-xxxxx --instance-id i-xxxxx --device /dev/sdf
+<img src="Images/Gp3VolumeAttached.png" alt="AWS Screenshot" width="400">
                 </div>
-                
-                <div class="aws-image">
-                    <img src="Images/volume-creation.png" alt="EBS Volume Creation Console" width="600">
-                </div>
+
 
                 <h4>Volume Encryption Implementation</h4>
                 <div class="aws-code">
 <span class="comment"># Create encrypted volume</span>
-aws ec2 create-volume --size 10 --volume-type gp3 --encrypted --availability-zone us-east-1a
+aws ec2 create-volume --size 10 --volume-type gp3 --encrypted --availability-zone eu-north-1b
 
-<span class="comment"># Encrypt existing unencrypted volume (via snapshot)</span>
+<span class="comment"># Reviewed: Encrypt existing unencrypted volume (via snapshot)</span>
 aws ec2 create-snapshot --volume-id vol-xxxxx --description "Backup before encryption"
 aws ec2 copy-snapshot --source-snapshot-id snap-xxxxx --encrypted
                 </div>
-                
-                <div class="aws-image">
-                    <img src="Images/volume-encryption.png" alt="Volume Encryption Configuration" width="600">
-                </div>
 
-                <h4>Multi-Attach Configuration (IO1/IO2)</h4>
+
+                <h4>Multi-Attach Configuration e.g.(IO1/IO2)</h4>
                 <div class="aws-code">
 <span class="comment"># Create IO2 volume with multi-attach</span>
 aws ec2 create-volume \
   --size 100 \
-  --volume-type io2 \
+  --volume-type GP3 \
   --iops 1000 \
   --multi-attach-enabled \
-  --availability-zone us-east-1a
+  --availability-zone eu-north-1b
                 </div>
-                
-                <div class="aws-image">
-                    <img src="Images/multi-attach-config.png" alt="Multi-Attach Volume Configuration" width="600">
-                </div>
+
             </div>
 
             <div class="phase-section">
@@ -487,20 +481,24 @@ aws ec2 copy-snapshot \
   --description "DR backup"
                 </div>
                 
-                <div class="aws-image">
-                    <img src="Images/snapshot-creation.png" alt="Snapshot Creation Process" width="600">
-                </div>
+ 
 
                 <h4>Recycle Bin Configuration</h4>
                 <ul class="aws-list">
-                    <li class="info"><strong>Retention Period:</strong> 7 days for production snapshots</li>
+                    <li class="info"><strong>Retention Period:</strong> 1 days for production snapshots</li>
                     <li class="info"><strong>Resource Types:</strong> EBS Snapshots and AMIs</li>
                     <li class="info"><strong>Rule Application:</strong> All resources with automatic tagging</li>
+					<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
+					<li class="info"><strong>Delete Snapshot:</strong> Snapshot deleted</li>
+					<img src="Images/demoRentionRule.png" alt="AWS Screenshot" width="400">
+					<li class="info"><strong>Delete Snapshot:</strong> Snapshot deleted</li>
+					<li class="info"><strong>Recover Snapshot:</strong> Snapshot recovered</li>
+					<img src="Images/demoSnapshotRecoverd.png" alt="AWS Screenshot" width="400">
+					<li></li>
+					<img src="Images/snapshotSuccessRecoverd.png" alt="AWS Screenshot" width="400">
                 </ul>
                 
-                <div class="aws-image">
-                    <img src="Images/recycle-bin-config.png" alt="Recycle Bin Configuration" width="600">
-                </div>
+
             </div>
 
             <div class="phase-section">
