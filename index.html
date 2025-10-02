@@ -478,13 +478,14 @@ aws ec2 copy-snapshot \
                         <ul class="aws-list">
                             <li class="info">Amazon Linux 2 with security updates</li>
                             <li class="info">Apache HTTP server installation</li>
-								<pre><code>#!/bin/bash
-								# Use this for your user data (script from top to bottom)
-								# install httpd (Linux 2 version)
-								yum update -y
-								yum install -y httpd
-								systemctl start httpd
-								systemctl enable httpd
+								<pre><code>
+									#!/bin/bash
+									# Use this for your user data (script from top to bottom)
+									# install httpd (Linux 2 version)
+									yum update -y
+									yum install -y httpd
+									systemctl start httpd
+									systemctl enable httpd
 								</code></pre> 
                             <li class="info">Application dependencies</li>
                         </ul>
@@ -505,7 +506,8 @@ aws ec2 create-image \
 				<img src="Images/AMI_Image.png" alt="AWS Screenshot" width="400">
 				<li>So now when launching an instance, I can select the AMI and simply add the index.HTML to the webServer, since its' webservice was already installed in the AMI: </li>
 				<img src="Images/InstanceDemoAMI.png" alt="AWS Screenshot" width="400">
-				<pre><code>#!/bin/bash
+				<pre><code>
+					#!/bin/bash
 					# Use this for your user data (script from top to bottom)
 					# install httpd (Linux 2 version)
 					echo "<h1>Hello World from $(hostname -f)</h1>" > /var/www/html/index.html
@@ -521,12 +523,7 @@ aws ec2 copy-image \
   --source-image-id ami-xxxxx \
   --name "Custom-WebServer-DR" \
   --region us-west-2
-                </div>
-                
-                <div class="aws-image">
-                    <img src="Images/ami-cross-region.png" alt="AMI Cross-Region Copy" width="600">
-                </div>
-            </div>
+        
 
             <div class="phase-section">
                 <h3 class="phase-title">Phase 4: EFS Implementation</h3>
@@ -538,45 +535,49 @@ aws efs create-file-system \
   --performance-mode generalPurpose \
   --throughput-mode elastic \
   --encrypted
-                </div>
-                
-                <div class="aws-image">
-                    <img src="Images/efs-creation.png" alt="EFS File System Creation" width="600">
-                </div>
+               
 
                 <h4>Mount Target Configuration</h4>
                 <div class="aws-code">
 <span class="comment"># Create mount targets in multiple AZs</span>
 aws efs create-mount-target \
+  
   --file-system-id fs-xxxxx \
+  <img src="Images/EFS.png" alt="AWS Screenshot" width="400">
   --subnet-id subnet-xxxxx \
-  --security-groups sg-xxxxx
-                </div>
-                
-                <div class="aws-image">
-                    <img src="Images/efs-mount-targets.png" alt="EFS Mount Target Configuration" width="600">
-                </div>
-
+  
+  --security-groups efs-Demo
+  <img src="Images/EFS_DemoSG.png" alt="AWS Screenshot" width="400">
+  --security-groups efs-SG1 and SG2 created for EC2 Instances
+  <img src="Images/SG1_2.png" alt="AWS Screenshot" width="400">
+  --EC2 instance A created
+  <img src="Images/InstanceA.png" alt="AWS Screenshot" width="400">
+  --EC2 instance B created
+  <img src="Images/InstanceB.png" alt="AWS Screenshot" width="400"> 
+</div>
                 <h4>Client Configuration</h4>
                 <div class="aws-code">
 <span class="comment"># Install EFS utilities</span>
 sudo yum install -y amazon-efs-utils
 
-<span class="comment"># Mount EFS file system</span>
+<span class="comment"># Mount EFS file system on EC2 InstanceA</span>
 sudo mount -t efs fs-xxxxx:/ /mnt/efs
+<img src="Images/InstanceA_mnt_efs_fs1.png" alt="AWS Screenshot" width="400"> 
+
+<span class="comment"># Mount EFS file system on EC2 InstanceB</span>
+sudo mount -t efs fs-xxxxx:/ /mnt/efs
+<img src="Images/InstanceB_mnt_efs_fs1.png" alt="AWS Screenshot" width="400"> 
 
 <span class="comment"># Configure automatic mounting</span>
 echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc/fstab
                 </div>
                 
-                <div class="aws-image">
-                    <img src="Images/efs-client-config.png" alt="EFS Client Configuration" width="600">
-                </div>
+
             </div>
         </section>
 
         <section class="aws-card">
-            <h2>Security Implementation</h2>
+            <h2>Reviewed Security Implementation options</h2>
             
             <h3>EBS Security</h3>
             <ul class="aws-list">
@@ -585,9 +586,6 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Security Groups:</strong> Restricted access to instances</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/ebs-security.png" alt="EBS Security Configuration" width="600">
-            </div>
 
             <h3>EFS Security</h3>
             <ul class="aws-list">
@@ -597,13 +595,11 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>POSIX Permissions:</strong> File-level security</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/efs-security.png" alt="EFS Security Configuration" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
-            <h2>Performance Optimization</h2>
+            <h2>Reviewed Performance Optimization topics</h2>
             
             <h3>EBS Performance Tuning</h3>
             <ul class="aws-list">
@@ -612,9 +608,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Instance Types:</strong> Nitro instances for maximum performance</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/ebs-performance.png" alt="EBS Performance Metrics" width="600">
-            </div>
+
 
             <h3>EFS Performance Configuration</h3>
             <ul class="aws-list">
@@ -623,13 +617,11 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Max I/O Mode:</strong> High-concurrency parallel workloads</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/efs-performance.png" alt="EFS Performance Configuration" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
-            <h2>Cost Optimization Strategies</h2>
+            <h2>Reviewed Cost Optimization Strategies</h2>
             
             <h3>EBS Cost Management</h3>
             <ul class="aws-list">
@@ -638,9 +630,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Archive Tier:</strong> 75% cost savings for infrequently accessed snapshots</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/ebs-cost-optimization.png" alt="EBS Cost Optimization Dashboard" width="600">
-            </div>
+
 
             <h3>EFS Cost Optimization</h3>
             <ul class="aws-list">
@@ -655,7 +645,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
         </section>
 
         <section class="aws-card">
-            <h2>Monitoring and Alerting</h2>
+            <h2>Reviewed Monitoring and Alerting</h2>
             
             <h3>CloudWatch Metrics Tracked</h3>
             <ul class="aws-list">
@@ -663,10 +653,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>EFS:</strong> DataReadIOBytes, DataWriteIOBytes, TotalIOTime</li>
                 <li class="info"><strong>EC2:</strong> DiskReadOps, DiskWriteOps, NetworkIn/Out</li>
             </ul>
-            
-            <div class="aws-image">
-                <img src="Images/cloudwatch-metrics.png" alt="CloudWatch Metrics Dashboard" width="600">
-            </div>
+
 
             <h3>Automated Alerts</h3>
             <ul class="aws-list">
@@ -676,13 +663,11 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info">Mount point accessibility issues</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/cloudwatch-alarms.png" alt="CloudWatch Alarms Configuration" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
-            <h2>Disaster Recovery Implementation</h2>
+            <h2>Reviewed Disaster Recovery Implementation topics</h2>
             
             <h3>Multi-AZ Strategy</h3>
             <ul class="aws-list">
@@ -703,9 +688,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li><strong>Cross-Region Failover:</strong> Automated AMI and snapshot copying</li>
             </ol>
             
-            <div class="aws-image">
-                <img src="Images/recovery-procedures.png" alt="Recovery Procedures Dashboard" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
@@ -715,44 +698,18 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
             <ul class="aws-list">
                 <li class="success">✅ Volume attachment and detachment across AZs</li>
                 <li class="success">✅ Snapshot creation and restoration</li>
-                <li class="success">✅ AMI creation and cross-region deployment</li>
-                <li class="success">✅ EFS multi-instance access validation</li>
-                <li class="success">✅ Encryption verification at rest and in transit</li>
-            </ul>
-            
-            <div class="aws-image">
-                <img src="Images/functionality-tests.png" alt="Functionality Testing Results" width="600">
-            </div>
 
-            <h3>Performance Tests</h3>
-            <ul class="aws-list">
-                <li class="success">✅ IOPS benchmarking across volume types</li>
-                <li class="success">✅ Throughput testing for EFS configurations</li>
-                <li class="success">✅ Latency measurements for different storage types</li>
-                <li class="success">✅ Concurrent access testing for multi-attach volumes</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/performance-tests.png" alt="Performance Testing Dashboard" width="600">
-            </div>
 
-            <h3>Failure Recovery Tests</h3>
-            <ul class="aws-list">
-                <li class="success">✅ Instance termination and volume persistence</li>
-                <li class="success">✅ AZ failure simulation with cross-AZ recovery</li>
-                <li class="success">✅ Snapshot recovery in different regions</li>
-                <li class="success">✅ EFS mount point failure and automatic reconnection</li>
-            </ul>
-            
-            <div class="aws-image">
-                <img src="Images/failure-recovery-tests.png" alt="Failure Recovery Test Results" width="600">
-            </div>
+
+
         </section>
 
         <section class="aws-card">
             <h2>Documentation and Knowledge Transfer</h2>
             
-            <h3>Technical Documentation Created</h3>
+            <h3>Technical Documentation Created - the current URL suffices</h3>
             <ul class="aws-list">
                 <li class="info"><strong>Architecture Diagrams:</strong> Visual representation of storage topology</li>
                 <li class="info"><strong>Operational Procedures:</strong> Step-by-step implementation guides</li>
@@ -760,56 +717,13 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Cost Analysis Reports:</strong> Storage cost breakdown and optimization recommendations</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/technical-documentation.png" alt="Technical Documentation Portfolio" width="600">
-            </div>
+ 
 
-            <h3>Best Practices Documented</h3>
-            <ul class="aws-list">
-                <li class="info"><strong>Security:</strong> Encryption standards and access control</li>
-                <li class="info"><strong>Performance:</strong> Optimal configurations for different workloads</li>
-                <li class="info"><strong>Cost Management:</strong> Right-sizing and lifecycle policies</li>
-                <li class="info"><strong>Monitoring:</strong> Essential metrics and alerting thresholds</li>
-            </ul>
+ 
             
-            <div class="aws-image">
-                <img src="Images/best-practices-guide.png" alt="Best Practices Documentation" width="600">
-            </div>
+
         </section>
 
-        <section class="aws-card">
-            <h2>Project Outcomes and Metrics</h2>
-            
-            <div class="aws-metrics">
-                <div class="metric-card">
-                    <span class="metric-value">99.9%</span>
-                    <span class="metric-label">Uptime Achieved</span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-value">40%</span>
-                    <span class="metric-label">Cost Reduction</span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-value">50%</span>
-                    <span class="metric-label">Faster Deployments</span>
-                </div>
-                <div class="metric-card">
-                    <span class="metric-value">Zero</span>
-                    <span class="metric-label">Data Loss Incidents</span>
-                </div>
-            </div>
-            
-            <div class="aws-image">
-                <img src="Images/project-metrics.png" alt="Project Success Metrics Dashboard" width="600">
-            </div>
-
-            <h3>Technical Achievements</h3>
-            <ul class="aws-list">
-                <li class="success"><strong>99.9%</strong> uptime across all storage services</li>
-                <li class="success"><strong>40%</strong> cost reduction through storage class optimization</li>
-                <li class="success"><strong>50%</strong> faster deployment time using custom AMIs</li>
-                <li class="success"><strong>Zero</strong> data loss incidents during testing period</li>
-            </ul>
 
             <h3>Skills Developed</h3>
             <ul class="aws-list">
@@ -820,9 +734,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info">Cost management and resource optimization</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/skills-development.png" alt="Skills Development Matrix" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
@@ -837,9 +749,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li><strong>Analytics:</strong> AWS Storage Lens implementation</li>
             </ol>
             
-            <div class="aws-image">
-                <img src="Images/future-enhancements.png" alt="Future Enhancement Roadmap" width="600">
-            </div>
+
 
             <h3>Scaling Considerations</h3>
             <ul class="aws-list">
@@ -849,9 +759,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 <li class="info"><strong>Serverless:</strong> Lambda-based automation</li>
             </ul>
             
-            <div class="aws-image">
-                <img src="Images/scaling-architecture.png" alt="Scaling Architecture Design" width="600">
-            </div>
+
         </section>
 
         <section class="aws-card">
@@ -865,8 +773,6 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                     <li class="info">Strategic storage planning and architecture design</li>
                     <li class="info">Hands-on technical implementation across multiple AWS services</li>
                     <li class="info">Security and compliance best practices</li>
-                    <li class="info">Performance optimization and monitoring</li>
-                    <li class="info">Cost-effective resource management</li>
                     <li class="info">Documentation and knowledge transfer capabilities</li>
                 </ul>
             </div>
@@ -918,9 +824,7 @@ echo 'fs-xxxxx.efs.region.amazonaws.com:/ /mnt/efs efs defaults,_netdev' >> /etc
                 </tbody>
             </table>
             
-            <div class="aws-image">
-                <img src="Images/additional-resources.png" alt="Additional Resources Overview" width="600">
-            </div>
+
         </section>
     </div>
 
